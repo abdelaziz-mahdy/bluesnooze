@@ -22,7 +22,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         initStatusItem()
         setLaunchAtLoginState()
         setupNotificationHandlers()
+        setupUserDefaultsObserver()
         setBluetooth(powerOn: true)
+    }
+
+    func applicationWillTerminate(_ aNotification: Notification) {
+        // Remove observer when app terminates
+        UserDefaults.standard.removeObserver(self, forKeyPath: "hideIcon")
     }
 
     // MARK: Click handlers
@@ -63,21 +69,60 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: UI state
 
     private func initStatusItem() {
-        if UserDefaults.standard.bool(forKey: "hideIcon") {
-            return
-        }
+        let shouldHideIcon = UserDefaults.standard.bool(forKey: "hideIcon")
+        
+        print("DEBUG: hideIcon setting = \(shouldHideIcon)")
 
-        if let icon = NSImage(named: "bluesnooze") {
-            icon.isTemplate = true
-            statusItem.button?.image = icon
+        if shouldHideIcon {
+            // Hide the status item from the menu bar
+            statusItem.isVisible = false
+            print("DEBUG: Status item hidden")
         } else {
-            statusItem.button?.title = "Bluesnooze"
+            // Show the status item in the menu bar
+            statusItem.isVisible = true
+            print("DEBUG: Status item visible")
+
+            if let icon = NSImage(named: "bluesnooze") {
+                icon.isTemplate = true
+                statusItem.button?.image = icon
+                print("DEBUG: Icon set successfully")
+            } else {
+                statusItem.button?.title = "Bluesnooze"
+                print("DEBUG: Using text title instead of icon")
+            }
+            statusItem.menu = statusMenu
         }
+        
+        // Always set the menu so it's available even when hidden
+        // (this won't show the icon, but keeps the menu accessible programmatically)
         statusItem.menu = statusMenu
     }
 
     private func setLaunchAtLoginState() {
         let state = LaunchAtLogin.isEnabled ? NSControl.StateValue.on : NSControl.StateValue.off
         launchAtLoginMenuItem.state = state
+    }
+
+    private func setupUserDefaultsObserver() {
+        UserDefaults.standard.addObserver(
+            self,
+            forKeyPath: "hideIcon",
+            options: .new,
+            context: nil
+        )
+    }
+
+    override func observeValue(
+        forKeyPath keyPath: String?,
+        of object: Any?,
+        change: [NSKeyValueChangeKey: Any]?,
+        context: UnsafeMutableRawPointer?
+    ) {
+        if keyPath == "hideIcon" {
+            print("DEBUG: hideIcon setting changed, updating status item")
+            DispatchQueue.main.async {
+                self.initStatusItem()
+            }
+        }
     }
 }

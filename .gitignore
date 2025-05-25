@@ -1,2 +1,4 @@
 xcuserdata/
 Carthage
+build
+.DS_Store

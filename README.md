@@ -24,14 +24,50 @@ With Bluesnooze the Bluetooth connection is switched off when your Mac sleeps, a
 
 ![Screenshot showing Bluesnooze in the status bar](images/screenshot.png)
 
-You might also want to check-out Whisper –  [the volume limiter for MacOS](https://apps.apple.com/gb/app/whisper-volume-limiter/id1438132944?mt=12).
+You might also want to check-out Whisper – [the volume limiter for MacOS](https://apps.apple.com/gb/app/whisper-volume-limiter/id1438132944?mt=12).
 
 ## Installation
 
 1. Download `Bluesnooze.zip` from the [latest release][download-latest]
 1. In Finder, open `Bluesnooze.zip` in your `Downloads` directory
 1. Drag `Bluesnooze.app` to your `Applications` directory
-1. *Optional*: Configure 'Launch at login'
+1. _Optional_: Configure 'Launch at login'
+
+## Building from Source
+
+If you want to build Bluesnooze from source, you can use the provided build script:
+
+### Prerequisites
+
+- Xcode command line tools: `xcode-select --install`
+- Carthage: `brew install carthage`
+- SwiftLint (optional): `brew install swiftlint`
+
+### Building
+
+```sh
+# Basic build (auto-detects code signing)
+./build.sh
+
+# Clean build with dependencies
+./build.sh --clean
+
+# Development build without code signing
+./build.sh --skip-codesign
+
+# Debug build
+./build.sh --debug
+
+# Build and open the result
+./build.sh --clean --open
+
+# Show all options
+./build.sh --help
+```
+
+The built application will be available in `build/export/Bluesnooze.app`.
+
+**Note:** The build script automatically detects if you have valid code signing certificates. If not, it will build without code signing for development use. The resulting app will run locally but won't be distributable.
 
 ## Caveats
 
