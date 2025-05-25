@@ -90,7 +90,7 @@ experiment as you like ✌️
 In your terminal run the following command:
 
 ```sh
-defaults write com.oliverpeate.Bluesnooze hideIcon -bool true && killall Bluesnooze
+defaults write com.oliverpeate.Bluesnooze hideIcon -bool true 
 ```
 
 When you next relaunch the application there should be no icon in the menu bar.
@@ -100,7 +100,7 @@ When you next relaunch the application there should be no icon in the menu bar.
 In your terminal run the following command:
 
 ```sh
-defaults delete com.oliverpeate.Bluesnooze hideIcon && killall Bluesnooze
+defaults delete com.oliverpeate.Bluesnooze hideIcon
 ```
 
 When you next relaunch the application it should appear in the menu bar.
